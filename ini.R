@@ -1,4 +1,6 @@
 ## Environment ----
+YT_DATA_API_KEY <- "AIzaSyBotXZPlvDrgRcrlBpvmxq1ad64nNckIDI"
+
 ## Library ---- 
 if(!require('pacman')){install.packages('pacman')}
 

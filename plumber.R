@@ -1,4 +1,7 @@
-source('ini.R')
+#source('ini.R')
+
+library('plumber')
+library('xml2')
 
 #* @apiTitle YouTube Webhook for Influencer CV
 

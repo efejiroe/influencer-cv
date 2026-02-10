@@ -12,6 +12,8 @@ pacman::p_load(
   ,'httr2'
   ,'plumber'
   ,'xml2'
+  ,'gitcreds'
+  ,'usethis'
 
   # Data transformation
   ,'data.table'

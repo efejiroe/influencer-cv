@@ -62,3 +62,12 @@ track_metrics <- function() {
 }
 
 track_metrics()
+
+# Maintenance
+# Remove videos older than 7 days (168 hours) from the 'active' list
+tracking <- read.csv("data/active_tracking.csv")
+tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
+
+# Overwrite with only the recent ones
+final_list <- tracking[tracking$age <= 168, c("video_id", "start_time")]
+write.csv(final_list, "data/active_tracking.csv", row.names = FALSE)

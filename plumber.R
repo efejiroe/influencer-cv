@@ -1,24 +1,19 @@
 source('ini.R')
 
-#* @plumber YouTube Webhook for Influencer CV
+#* @apiTitle YouTube Webhook for Influencer CV
 
-# 1. VERIFICATION HANDSHAKE: GET endpoint for YouTube's verification handshake
-
+# 1. VERIFICATION HANDSHAKE
 #* @get /webhook
-
 function(hub.challenge = "") {
-  as.character(hub.challenge) # Sent to show server is alive
+  as.character(hub.challenge)
 }
 
-
-# 2. DATA RECEIVER: POST endpoint to receive video notifications
-
+# 2. DATA RECEIVER
 #* @post /webhook
-
 function(req) {
-  xml_data <- read_xml(req$postBody) # Payload
-  v_id <- xml_text(xml_find_first(xml_data, ".//yt:videoId")) # Video ID
-  c_id <- xml_text(xml_find_first(xml_data, ".//yt:channelId")) # Channel ID
+  xml_data <- read_xml(req$postBody)
+  v_id <- xml_text(xml_find_first(xml_data, ".//yt:videoId"))
+  c_id <- xml_text(xml_find_first(xml_data, ".//yt:channelId"))
   
   new_entry <- data.frame(
     video_id = v_id,
@@ -26,15 +21,20 @@ function(req) {
     channel_id = c_id
   )
   
-  # APPEND to your tracking file so tracker.R sees it
+  # Ensure the file exists before appending to avoid deployment errors
+  file_path <- "data/active_tracking.csv"
+  
   write.table(
     new_entry, 
-    "active_tracking.csv",
+    file_path,
     append = TRUE, 
     sep = ",",
     row.names = FALSE, 
-    col.names = !file.exists("active_tracking.csv")
-    )
+    col.names = !file.exists(file_path)
+  )
   
-  res$status <- 204 # Confirm receipt
+  # LOGGING: Helps you debug in the Posit Connect logs
+  message(paste("Logged new video:", v_id, "from channel:", c_id))
+  
+  res$status <- 204
 }

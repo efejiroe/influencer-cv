@@ -14,6 +14,7 @@ pacman::p_load(
   ,'xml2'
   ,'gitcreds'
   ,'usethis'
+  ,'rsconnect'
 
   # Data transformation
   ,'data.table'

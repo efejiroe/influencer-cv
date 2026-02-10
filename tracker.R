@@ -1,13 +1,10 @@
-
-# 1. SETUP: Get API key and Define Channels
 source('ini.R')
 
+# 1. Update the list of videos
 channel_ids <- c(
-  "UCEYKSLqhk9HsOd68T2jKbbQ", # Rebecca
+  "UCEYKSLqhk9HsOd68T2jKbbQ", # Rebecca Joy
   "UCHl5BfkeoaXp8Yzne1TDYZg" # Me
   )
-
-# 2. LISTENER: Get latest video ID
 
 get_latest_vid <- function(cid) {
   req <- request("https://www.googleapis.com/youtube/v3/search")%>%
@@ -18,52 +15,48 @@ get_latest_vid <- function(cid) {
       maxResults = 1,
       type = "video",
       key = API_KEY
-      ) %>%
+      )%>%
     req_perform()%>%
     resp_body_json()
-  return(req$items[[1]]$id$videoId)
+  
+  req$items[[1]]$id$videoId
 }
 
-# Run once to populate your tracking file
+# 2. Get current tracking list and update
+if (file.exists("data/active_tracking.csv")) {
+  current_list <- read.csv("data/active_tracking.csv")
+} else {
+  current_list <- data.frame(video_id = character(), start_time = character())
+}
+
 vids <- sapply(channel_ids, get_latest_vid)
 
-active_tracking <- data.frame(video_id = vids, start_time = Sys.time())
+new_vids <- data.frame(video_id = vids, start_time = Sys.time())
 
-write.csv(active_tracking, "data/active_tracking.csv", row.names = FALSE)
+updated_list <- rbind(current_list, new_vids)
+updated_list <- updated_list[!duplicated(updated_list$video_id), ]
 
+write.csv(updated_list, "data/active_tracking.csv", row.names = FALSE)
 
-# 3. TRACKER: Run this on an hourly schedule
+# 2. Track metrics in batches
 track_metrics <- function() {
   tracking <- read.csv("data/active_tracking.csv")
+  tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
   
-  for (i in 1:nrow(tracking)) {
-    # Calculate time elapsed
-    hours_since_post <- as.numeric(difftime(Sys.time(), tracking$start_time[i], units = "hours"))
+  # Filter: < 48h OR (Day 3-7 AND Hour is 12)
+  to_track <- tracking[tracking$age <= 48 | (tracking$age > 48 & tracking$age <= 168 & as.POSIXlt(Sys.time())$hour == 12), ]
+  
+  if (nrow(to_track) > 0) {
+    # Batch request (up to 50 IDs at once)
+    ids_string <- paste(to_track$video_id, collapse = ",")
     
-    is_early <- hours_since_post <= 48 # Hourly for 48 hours
-    is_daily <- hours_since_post > 48 && hours_since_post <= 168 && as.POSIXlt(Sys.time())$hour == 12 # Daily, at hour 12 for days 3-7
+    res <- request("https://www.googleapis.com/youtube/v3/videos") %>%
+      req_url_query(part = "statistics", id = ids_string, key = API_KEY) %>%
+      req_perform() %>% resp_body_json()
     
-    if (is_early || is_daily) {
-      stats_req <- request("https://www.googleapis.com/youtube/v3/videos")%>%
-        req_url_query(
-          part = "statistics",
-          id = tracking$video_id[i],
-          key = API_KEY
-          )%>%
-        req_perform()%>% 
-        resp_body_json()
-      
-      stats <- stats_req$items[[1]]$statistics
-      
-      result <- data.frame(
-        time = Sys.time(),
-        id = tracking$video_id[i],
-        v = stats$viewCount,
-        l = stats$likeCount,
-        c = stats$commentCount
-        )
-      
-      write.table(result, "data/tracking_data.csv", append = TRUE, sep = ",", row.names = FALSE, col.names = !file.exists("results.csv"))
+    for (item in res$items) {
+      out <- data.frame(time = Sys.time(), id = item$id, v = item$statistics$viewCount, l = item$statistics$likeCount, c = item$statistics$commentCount)
+      write.table(out, "data/tracking_data.csv", append = TRUE, sep = ",", row.names = FALSE, col.names = !file.exists("data/tracking_data.csv"))
     }
   }
 }

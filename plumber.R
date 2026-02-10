@@ -1,3 +1,7 @@
+# API hosted on Posit Cloud
+# uses web hooks to listen for new content on YouTube
+# Doesn't work on free tier.
+
 source('ini.R')
 
 #* @apiTitle YouTube Webhook for Influencer CV

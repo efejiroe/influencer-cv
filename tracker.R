@@ -2,13 +2,10 @@ source('ini.R')
 
 # 1. Update the list of videos
 channel_ids <- c(
-  "UCEYKSLqhk9HsOd68T2jKbbQ",
-  "UCuY9fB7N0W40f7f-P9R_YvQ",
-  "UCk_C77fIq6e60Uo_eT8Gq7g",
-  "UCBbDWMccTJCL0WmbMHNLZIw",
-  "UCHl5BfkeoaXp8Yzne1TDYZg",
-  "UC_vH_YvS7uM7Z_E6vE9Qy6A",
-  "UC7OjdmWesJHZiqZwxeljkYQ"
+  "UCEYKSLqhk9HsOd68T2jKbbQ"
+  ,"UCBbDWMccTJCL0WmbMHNLZIw"
+  ,"UCHl5BfkeoaXp8Yzne1TDYZg"
+  ,"UC7OjdmWesJHZiqZwxeljkYQ"
   )
 
 get_latest_vid <- function(cid) {

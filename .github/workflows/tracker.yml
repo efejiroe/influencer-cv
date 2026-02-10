@@ -1,39 +1,41 @@
-name: Hourly YouTube Tracker
+name: Hourly Influencer Tracker
 
 on:
   schedule:
-    # Runs at minute 37 of every hour (random offset avoids high-traffic delays)
-    - cron: '37 * * * *'
-  workflow_dispatch: # Allows you to run it manually for testing
+    - cron: '0 * * * *' # Runs exactly at the start of every hour
+  workflow_dispatch:   # Allows manual run from the "Actions" tab
 
 jobs:
-  track:
+  run-tracker:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to save CSV changes back to your repo
+      contents: write # Important: Gives the action permission to push CSV changes
     
     env:
       YT_DATA_API_KEY: ${{ secrets.YT_DATA_API_KEY }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
-          use-public-rspm: true # Fast binary package installs
+          use-public-rspm: true # Speeds up package installation
 
-      - name: Restore R environment
-        uses: r-lib/actions/setup-renv@v2 # Uses your renv.lock file
+      - name: Install dependencies
+        run: |
+          install.packages("pacman")
+          source("ini.R")
+        shell: Rscript {0}
 
-      - name: Run Tracker Script
+      - name: Run tracker script
         run: Rscript tracker.R
 
-      - name: Commit and Push results
+      - name: Commit and Push changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add tracking_results.csv
+          git add data/*.csv
           git commit -m "Automated data update: $(date)" || echo "No changes to commit"
           git push

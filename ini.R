@@ -1,36 +1,29 @@
 ## Environment ----
 API_KEY <- Sys.getenv("YT_DATA_API_KEY")
 
+devMode <- FALSE 
+
 ## Library ---- 
-if(!require('pacman')){install.packages('pacman')}
+if(!require('pacman', quietly = TRUE)){install.packages('pacman')}
 
+if(devMode){
+  print('Development mode')
+  pacman::p_load(
+    'renv'
+    ,'plumber'
+    ,'gitcreds'
+    ,'usethis'
+    ,'rsconnect'
+  )
+} else {
+  print('Server mode: Loading only essential dependencies')
+}
+
+# Essential production dependencies
 pacman::p_load(
-  # Utility
-  'renv'
-  ,'jsonlite'
-  ,'httr'
+  'jsonlite'
   ,'httr2'
-  ,'plumber'
   ,'xml2'
-  ,'gitcreds'
-  ,'usethis'
-  ,'rsconnect'
-
-  # Data transformation
-  ,'data.table'
-  ,'tidyverse'
-  ,'janitor'
-  ,'skimr'
-
-  # Machine learning and AI
-  ,'gemini.R'
-  ,'mlr3'
-  ,'mlr3learners'
-
-  # Graphing
-  ,'plotly'
 )
 
 cat('Dependencies Loaded.\n')
-d <- search()
-print(d)

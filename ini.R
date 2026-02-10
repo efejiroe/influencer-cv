@@ -1,5 +1,5 @@
 ## Environment ----
-YT_DATA_API_KEY <- "AIzaSyBotXZPlvDrgRcrlBpvmxq1ad64nNckIDI"
+API_KEY <- Sys.getenv("YT_DATA_API_KEY")
 
 ## Library ---- 
 if(!require('pacman')){install.packages('pacman')}
@@ -11,6 +11,7 @@ pacman::p_load(
   ,'httr'
   ,'httr2'
   ,'plumber'
+  ,'xml2'
 
   # Data transformation
   ,'data.table'
@@ -26,35 +27,6 @@ pacman::p_load(
   # Graphing
   ,'plotly'
 )
-
-## Functions ----
-
-# Get upload notification
-
-# S1. Verification handshake:
-# YouTube sends GET request
-# Respond with "Hub Challenge" parameter
-
-function(
-    res,
-    `hub.mode` = "",
-    `hub.topic` = "",
-    `hub.challenge` = "",
-    `hub.lease_seconds` = ""){
-  if (`hub.challenge` != "") {
-    res$status <- 200
-    return(as.character(`hub.challenge`))
-  }
-}
-
-# S2. Receive Video notification
-# Video ID is in the XML payload
-# Response confirms receipt
-
-function(req) {
-  print("New video notification received!")
-  return(response(status = 204))
-}
 
 cat('Dependencies Loaded.\n')
 d <- search()

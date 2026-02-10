@@ -1,6 +1,6 @@
 source('ini.R')
 
-#* @apiTitle YouTube Webhook for Influencer CV
+#* @plumber YouTube Webhook for Influencer CV
 
 # 1. VERIFICATION HANDSHAKE: GET endpoint for YouTube's verification handshake
 

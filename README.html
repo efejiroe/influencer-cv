@@ -370,7 +370,9 @@ every hour via GitHub Actions.</p>
 <li><strong>API Call:</strong> It uses the search endpoint to find the
 most recent video for each channel.</li>
 <li><strong>Merge Logic:</strong> It compares the latest video ID with
-the existing list in <code>data/active_tracking.csv</code>.</li>
+the existing list in <code>data/active_tracking.csv</code> columns
+arranged by <code>poll date</code>, <code>views</code>,
+<code>likes</code> and <code>comments</code>.</li>
 <li><strong>Persistence:</strong> If a new video is found, it is added
 with the current timestamp as its start_time. Existing videos remain
 untouched to preserve their original launch timer.</li>

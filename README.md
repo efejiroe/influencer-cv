@@ -11,7 +11,7 @@ The system operates on a "Discovery and Track" model, running once every hour vi
 The script iterates through the `channel_ids` defined in `tracker.R`.
 
 - __API Call:__ It uses the search endpoint to find the most recent video for each channel.
-- __Merge Logic:__ It compares the latest video ID with the existing list in `data/active_tracking.csv`.
+- __Merge Logic:__ It compares the latest video ID with the existing list in `data/active_tracking.csv` columns arranged by `poll date`, `views`, `likes` and `comments`.
 - __Persistence:__ If a new video is found, it is added with the current timestamp as its start\_time\. Existing videos remain untouched to preserve their original launch timer\.
 
 ### 2\. Metric Collection - The 48/7 Logic

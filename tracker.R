@@ -24,6 +24,7 @@ get_latest_vid <- function(cid) {
 current_list <- read.csv("data/active_tracking.csv")
 current_list$start_time <- as.POSIXct(current_list$start_time)
 
+
 vids <- sapply(channel_ids, get_latest_vid)
 
 new_vids <- data.frame(video_id = vids, start_time = Sys.time())
@@ -68,5 +69,5 @@ tracking <- read.csv("data/active_tracking.csv")
 tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
 
 # Overwrite with only the recent ones
-final_list <- tracking[tracking$age <= 168, c("video_id", "start_time")]
+final_list <- tracking[tracking$age <= 168, c("video_id", "start_time", "channel_id")]
 write.csv(final_list, "data/active_tracking.csv", row.names = FALSE)

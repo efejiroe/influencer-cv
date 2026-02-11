@@ -22,19 +22,17 @@ get_latest_vid <- function(cid) {
 
 # 3. Get current tracking list and update
 current_list <- read.csv("data/active_tracking.csv")
-row.names(current_list) <- NULL
-
+current_list$start_time <- as.POSIXct(current_list$start_time)
 
 vids <- sapply(channel_ids, get_latest_vid)
 
 new_vids <- data.frame(video_id = vids, start_time = Sys.time())
 
-new_vids$start_time <- as.character(new_vids$start_time)
 new_vids$channel_id <- rownames(new_vids)
 rownames(new_vids) <- NULL
 
 
-updated_list <- bind_rows(current_list, new_vids)
+updated_list <- rbind(current_list, new_vids)
 updated_list <- updated_list[!duplicated(updated_list$video_id), ]
 
 write.csv(updated_list, "data/active_tracking.csv", row.names = FALSE)

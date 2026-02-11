@@ -427,14 +427,9 @@ roadmap for GitHub.</li>
 <li>Open <code>tracker.R</code>.</li>
 <li>Find the <code>channel_ids</code> vector at the top of the
 script.</li>
-<li>Add the new Channel ID (usually starts with UC):</li>
-</ol>
-<pre><code>channel_ids &lt;- c(
-  &quot;UCEYKSLqhk9HsOd68T2jKbbQ&quot;, # Rebecca
-  &quot;UCHl5BfkeoaXp8Yzne1TDYZg&quot;, # Me
-  &quot;UCnewChannelIDHere&quot;        # New Influencer
-)</code></pre>
-<ol start="4" style="list-style-type: decimal">
+<li>Add the new Channel ID (usually starts with UC) to
+<code>data/influencers.csv</code> sourced from Modash and Social
+Blade:</li>
 <li>Commit and push the changes to GitHub. The next hourly run will
 automatically begin tracking the new influencer.</li>
 </ol>

@@ -44,15 +44,7 @@ To scale beyond 100 influencers, the script utilizes __batched requests__. Inste
 
 1. Open `tracker.R`.
 2. Find the `channel_ids` vector at the top of the script.
-3. Add the new Channel ID (usually starts with UC):
-```
-channel_ids <- c(
-  "UCEYKSLqhk9HsOd68T2jKbbQ", # Rebecca
-  "UCHl5BfkeoaXp8Yzne1TDYZg", # Me
-  "UCnewChannelIDHere"        # New Influencer
-)
-```
-
+3. Add the new Channel ID (usually starts with UC) to `data/influencers.csv` sourced from Modash and Social Blade:
 4. Commit and push the changes to GitHub\. The next hourly run will automatically begin tracking the new influencer.
 
 ## Configuration

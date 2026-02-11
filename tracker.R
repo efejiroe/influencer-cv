@@ -1,13 +1,10 @@
 source('ini.R')
 
-# 1. Update the list of videos
-channel_ids <- c(
-  "UCEYKSLqhk9HsOd68T2jKbbQ"
-  ,"UCBbDWMccTJCL0WmbMHNLZIw"
-  ,"UCHl5BfkeoaXp8Yzne1TDYZg"
-  ,"UC7OjdmWesJHZiqZwxeljkYQ"
-  )
+# 1. Get list of influencers
+influencers <- read_csv("data/influencers.csv") # Manually sourced from Social Blade
+channel_ids <- influencers$`Channel ID`
 
+# 2. Update the list of videos
 get_latest_vid <- function(cid) {
   req <- request("https://www.googleapis.com/youtube/v3/search")%>%
     req_url_query(
@@ -24,23 +21,26 @@ get_latest_vid <- function(cid) {
   req$items[[1]]$id$videoId
 }
 
-# 2. Get current tracking list and update
-if (file.exists("data/active_tracking.csv")) {
-  current_list <- read.csv("data/active_tracking.csv")
-} else {
-  current_list <- data.frame(video_id = character(), start_time = character())
-}
+# 3. Get current tracking list and update
+current_list <- read.csv("data/active_tracking.csv")
+row.names(current_list) <- NULL
+
 
 vids <- sapply(channel_ids, get_latest_vid)
 
 new_vids <- data.frame(video_id = vids, start_time = Sys.time())
 
-updated_list <- rbind(current_list, new_vids)
+new_vids$start_time <- as.character(new_vids$start_time)
+new_vids$channel_id <- rownames(new_vids)
+rownames(new_vids) <- NULL
+
+
+updated_list <- bind_rows(current_list, new_vids)
 updated_list <- updated_list[!duplicated(updated_list$video_id), ]
 
 write.csv(updated_list, "data/active_tracking.csv", row.names = FALSE)
 
-# 2. Track metrics in batches
+# Track metrics in batches
 track_metrics <- function() {
   tracking <- read.csv("data/active_tracking.csv")
   tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
@@ -65,7 +65,7 @@ track_metrics <- function() {
 
 track_metrics()
 
-# Maintenance
+# 4. Clean up redundancies
 # Remove videos older than 7 days (168 hours) from the 'active' list
 tracking <- read.csv("data/active_tracking.csv")
 tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))

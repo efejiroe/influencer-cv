@@ -6,19 +6,18 @@ channel_ids <- influencers$`Channel ID`
 
 # 2. Update the list of videos
 get_latest_vid <- function(cid) {
-  req <- request("https://www.googleapis.com/youtube/v3/search")%>%
-    req_url_query(
-      part = "snippet",
-      channelId = cid,
-      order = "date",
-      maxResults = 1,
-      type = "video",
-      key = API_KEY
-      )%>%
-    req_perform()%>%
-    resp_body_json()
+  rss_url <- paste0("https://www.youtube.com/feeds/videos.xml?channel_id=", cid)
   
-  req$items[[1]]$id$videoId
+  resp <- request(rss_url) %>%
+    req_perform()
+  
+  xml_data <- resp_body_xml(resp)
+  
+  video_id <- xml_data %>%
+    xml_find_first(".//yt:videoId", xml_ns(xml_data)) %>%
+    xml_text()
+  
+  return(video_id)
 }
 
 # 3. Get current tracking list and update

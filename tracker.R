@@ -1,8 +1,8 @@
 source('ini.R')
 
 # 1. Get list of influencers
-influencers <- read_csv("data/influencers.csv") # Manually sourced from Social Blade
-channel_ids <- influencers$`Channel ID`
+influencers <- read.csv("data/influencers.csv") # Manually sourced from Social Blade
+channel_ids <- influencers$Channel.ID
 
 # 2. Update the list of videos
 get_latest_vid <- function(cid) {

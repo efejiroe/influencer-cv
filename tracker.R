@@ -1,18 +1,25 @@
 source('ini.R')
 
 # 1. Get list of influencers
-influencers <- read.csv("data/influencers.csv") # Manually sourced from Social Blade
+influencers <- read.csv("data/influencers.csv") 
 channel_ids <- influencers$Channel.ID
 
 # 2. Update the list of videos
 get_latest_vid <- function(cid) {
   rss_url <- paste0("https://www.youtube.com/feeds/videos.xml?channel_id=", cid)
   
-  resp <- request(rss_url) %>%
-    req_perform()
+  resp <- tryCatch({
+    request(rss_url) %>% req_perform()
+  }, error = function(e) {
+    if (grepl("403", e$message)) {
+      message("Quota potentially exhausted at RSS gateway. Skipping...")
+    }
+    return(NULL) 
+  })
+  
+  if (is.null(resp)) return(NULL)
   
   xml_data <- resp_body_xml(resp)
-  
   video_id <- xml_data %>%
     xml_find_first(".//yt:videoId", xml_ns(xml_data)) %>%
     xml_text()
@@ -24,50 +31,82 @@ get_latest_vid <- function(cid) {
 current_list <- read.csv("data/active_tracking.csv")
 current_list$start_time <- as.POSIXct(current_list$start_time)
 
+# Get latest IDs
+vids <- sapply(channel_ids, get_latest_vid, simplify = FALSE)
 
-vids <- sapply(channel_ids, get_latest_vid)
+# REMOVE NULLS: Prevents "NULL" strings from entering your CSV
+vids <- vids[!sapply(vids, is.null)]
 
-new_vids <- data.frame(video_id = vids, start_time = Sys.time())
-
-new_vids$channel_id <- rownames(new_vids)
-rownames(new_vids) <- NULL
-
-
-updated_list <- rbind(current_list, new_vids)
-updated_list <- updated_list[!duplicated(updated_list$video_id), ]
-
-write.csv(updated_list, "data/active_tracking.csv", row.names = FALSE)
+if (length(vids) > 0) {
+  new_vids <- data.frame(
+    video_id = unlist(vids), 
+    start_time = Sys.time(),
+    channel_id = names(vids), # Use names from sapply
+    stringsAsFactors = FALSE
+  )
+  
+  updated_list <- rbind(current_list, new_vids)
+  # Remove duplicates and ensure "NULL" didn't slip in
+  updated_list <- updated_list[!duplicated(updated_list$video_id) & !is.na(updated_list$video_id), ]
+  write.csv(updated_list, "data/active_tracking.csv", row.names = FALSE)
+}
 
 # Track metrics in batches
 track_metrics <- function() {
   tracking <- read.csv("data/active_tracking.csv")
-  tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
+  if (nrow(tracking) == 0) return(NULL)
   
-  # Filter: < 48h OR (Day 3-7 AND Hour is 12)
+  tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
   to_track <- tracking[tracking$age <= 48 | (tracking$age > 48 & tracking$age <= 168 & as.POSIXlt(Sys.time())$hour == 12), ]
   
   if (nrow(to_track) > 0) {
-    # Batch request (up to 50 IDs at once)
     ids_string <- paste(to_track$video_id, collapse = ",")
     
-    res <- request("https://www.googleapis.com/youtube/v3/videos") %>%
+    # 1. Prepare the request
+    req <- request("https://www.googleapis.com/youtube/v3/videos") %>%
       req_url_query(part = "statistics", id = ids_string, key = API_KEY) %>%
-      req_perform() %>% resp_body_json()
+      req_error(is_error = function(resp) FALSE) # 2. Stop httr2 from crashing on 403/404
     
+    # 3. Perform and check status
+    resp <- req_perform(req)
+    status <- resp_status(resp)
+    
+    if (status == 403) {
+      message("Quota exhausted. No changes made to the data.")
+      return(NULL) # Exit function gracefully
+    }
+    
+    if (status != 200) {
+      message(paste("API Error:", status, "- Skipping metrics update."))
+      return(NULL)
+    }
+    
+    res <- resp_body_json(resp)
+    
+    # Identify and remove missing IDs
+    returned_ids <- sapply(res$items, function(x) x$id)
+    missing_ids <- setdiff(to_track$video_id, returned_ids)
+    
+    if (length(missing_ids) > 0) {
+      message("Removing deleted/missing videos: ", paste(missing_ids, collapse = ", "))
+      tracking <- tracking[!tracking$video_id %in% missing_ids, ]
+      write.csv(tracking, "data/active_tracking.csv", row.names = FALSE)
+    }
+    
+    # Save statistics
     for (item in res$items) {
-      out <- data.frame(time = Sys.time(), id = item$id, v = item$statistics$viewCount, l = item$statistics$likeCount, c = item$statistics$commentCount)
-      write.table(out, "data/tracking_data.csv", append = TRUE, sep = ",", row.names = FALSE, col.names = !file.exists("data/tracking_data.csv"))
+      out <- data.frame(time = Sys.time(), id = item$id, v = item$statistics$viewCount, 
+                        l = item$statistics$likeCount, c = item$statistics$commentCount)
+      write.table(out, "data/tracking_data.csv", append = TRUE, sep = ",", 
+                  row.names = FALSE, col.names = !file.exists("data/tracking_data.csv"))
     }
   }
 }
 
 track_metrics()
 
-# 4. Clean up redundancies
-# Remove videos older than 7 days (168 hours) from the 'active' list
+# 4. Final Clean up
 tracking <- read.csv("data/active_tracking.csv")
 tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
-
-# Overwrite with only the recent ones
 final_list <- tracking[tracking$age <= 168, c("video_id", "start_time", "channel_id")]
 write.csv(final_list, "data/active_tracking.csv", row.names = FALSE)

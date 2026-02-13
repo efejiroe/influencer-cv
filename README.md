@@ -42,10 +42,10 @@ To scale beyond 100 influencers, the script utilizes __batched requests__. Inste
 
 ## How to Add a New Influencer
 
-1. Open `tracker.R`.
-2. Find the `channel_ids` vector at the top of the script.
-3. Add the new Channel ID (usually starts with UC) to `data/influencers.csv` sourced from Modash and Social Blade:
-4. Commit and push the changes to GitHub\. The next hourly run will automatically begin tracking the new influencer.
+1. Sourced Influencer name, Handle and Channel ID from Modash and Social Blade
+2. Open `data/influencer.csv`.
+4. Add the new Influencer name, Handle and Channel ID (usually starts with UC) to CSV:
+5. Commit and push the changes to GitHub\. The next hourly run will automatically begin tracking the new influencer videos.
 
 ## Configuration
 

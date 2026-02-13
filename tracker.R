@@ -65,15 +65,15 @@ track_metrics <- function() {
     # 1. Prepare the request
     req <- request("https://www.googleapis.com/youtube/v3/videos") %>%
       req_url_query(part = "statistics", id = ids_string, key = API_KEY) %>%
-      req_error(is_error = function(resp) FALSE) # 2. Stop httr2 from crashing on 403/404
+      req_error(is_error = function(resp) FALSE) 
     
-    # 3. Perform and check status
+    # 2. Perform and check status
     resp <- req_perform(req)
     status <- resp_status(resp)
     
     if (status == 403) {
       message("Quota exhausted. No changes made to the data.")
-      return(NULL) # Exit function gracefully
+      return(NULL) 
     }
     
     if (status != 200) {
@@ -89,16 +89,39 @@ track_metrics <- function() {
     
     if (length(missing_ids) > 0) {
       message("Removing deleted/missing videos: ", paste(missing_ids, collapse = ", "))
+      # Note: Ensure 'tracking' exists in this scope or is updated globally
       tracking <- tracking[!tracking$video_id %in% missing_ids, ]
       write.csv(tracking, "data/active_tracking.csv", row.names = FALSE)
     }
     
-    # Save statistics
+    # Returns NA if the value is missing/NULL so the data.frame remains valid
+    # Influencers disabling engagement can cause this.
+    get_stat <- function(stat_item) {
+      if (is.null(stat_item)) return(NA) else return(stat_item)
+    }
+    
+    # 3. Save statistics
     for (item in res$items) {
-      out <- data.frame(time = Sys.time(), id = item$id, v = item$statistics$viewCount, 
-                        l = item$statistics$likeCount, c = item$statistics$commentCount)
-      write.table(out, "data/tracking_data.csv", append = TRUE, sep = ",", 
-                  row.names = FALSE, col.names = !file.exists("data/tracking_data.csv"))
+      # Extract stats safely
+      stats <- item$statistics
+      
+      out <- data.frame(
+        time = Sys.time(), 
+        id   = item$id, 
+        v    = get_stat(stats$viewCount), 
+        l    = get_stat(stats$likeCount), 
+        c    = get_stat(stats$commentCount),
+        stringsAsFactors = FALSE
+      )
+      
+      write.table(
+        out, 
+        "data/tracking_data.csv", 
+        append = TRUE, 
+        sep = ",", 
+        row.names = FALSE, 
+        col.names = !file.exists("data/tracking_data.csv")
+      )
     }
   }
 }

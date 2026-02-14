@@ -1,7 +1,7 @@
 ## Environment ----
 API_KEY <- Sys.getenv("YT_DATA_API_KEY")
 
-devMode <- FALSE 
+devMode <- TRUE
 
 ## Library ---- 
 if(!require('pacman', quietly = TRUE)){install.packages('pacman')}
@@ -14,6 +14,9 @@ if(devMode){
     ,'gitcreds'
     ,'usethis'
     ,'rsconnect'
+    ,'data.table'
+    ,'janitor'
+    ,'skimr'
   )
 } else {
   print('Server mode: Loading only essential dependencies')

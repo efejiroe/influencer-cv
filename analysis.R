@@ -50,3 +50,9 @@ d[, `:=`(
 d[, intent := round(ifelse(views_delta > 0, comments_delta/views_delta, 0), digits = 2)]
 
 # My metrics are dynamic which differentiates this.
+
+# The algorithm:
+# Watch time > Comments > Likes > Views
+# Hi comment volumes = hi engagement.
+# Hi Like/View > 4% trigger the algorithm i.e. viewer satisfaction
+# Hi View velocity triggers the algorithm.

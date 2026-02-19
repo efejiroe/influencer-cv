@@ -29,8 +29,9 @@ d[, `:=`(
 # This is good for delaying the decay.
 
 d[, `:=`(
-  view_velocity = ifelse(launch_age > 0, round(views/launch_age, digits = 1), 0),
-  view_power = ifelse(interval > 0, round((views_delta/interval)*views_delta, digits = 0), 0)
+  view_velocity_cumm = ifelse(launch_age > 0, round(views/launch_age, digits = 1), 0),
+  view_velocity_inst = ifelse(interval > 0, round(views_delta/interval, digits = 1), 0),
+  view_power_inst = ifelse(interval > 0, round((views_delta/interval)*views_delta, digits = 0), 0)
   )]
 
 # Engagement velocity and power
@@ -39,8 +40,9 @@ d[, `:=`(
 # Power shows how consistent engagement is - penalizes slow burn, indicates hot/cold converters.
 d[, engagement_delta := round(ifelse(views_delta > 0, (likes_delta+comments_delta)/views_delta, 0), digits = 1)]
 d[, `:=`(
-  engagement_velocity = ifelse(launch_age > 0, round(engagement/launch_age, digits = 1), 0),
-  engagement_power = ifelse(interval > 0, round((engagement_delta/interval)*engagement_delta, digits = 0), 0)
+  engagement_velocity_cumm = ifelse(launch_age > 0, round(engagement/launch_age, digits = 1), 0),
+  engagement_velocity_inst = ifelse(interval > 0, round(engagement_delta/interval, digits = 1), 0),
+  engagement_power_inst = ifelse(interval > 0, round((engagement_delta/interval)*engagement_delta, digits = 0), 0)
   )]
 
 # Intent measures the quality of engagement velocity

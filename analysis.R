@@ -30,8 +30,7 @@ d[, `:=`(
 
 d[, `:=`(
   view_velocity_cumm = ifelse(launch_age > 0, round(views/launch_age, digits = 1), 0),
-  view_velocity_inst = ifelse(interval > 0, round(views_delta/interval, digits = 1), 0),
-  view_power_inst = ifelse(interval > 0, round((views_delta/interval)*views_delta, digits = 0), 0)
+  view_velocity_inst = ifelse(interval > 0, round((views_delta/interval)*views_delta, digits = 0), 0)
   )]
 
 # Engagement velocity and power

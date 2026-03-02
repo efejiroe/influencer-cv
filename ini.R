@@ -1,7 +1,7 @@
 ## Environment ----
 API_KEY <- Sys.getenv("YT_DATA_API_KEY")
 
-devMode <- TRUE
+devMode <- FALSE
 
 ## Library ---- 
 if(!require('pacman', quietly = TRUE)){install.packages('pacman')}
@@ -14,7 +14,6 @@ if(devMode){
     ,'gitcreds'
     ,'usethis'
     ,'rsconnect'
-    ,'data.table'
     ,'janitor'
     ,'skimr'
   )
@@ -27,6 +26,7 @@ pacman::p_load(
   'jsonlite'
   ,'httr2'
   ,'xml2'
+  ,'data.table'
 )
 
 cat('Dependencies Loaded.\n')

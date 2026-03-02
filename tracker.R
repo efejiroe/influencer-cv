@@ -133,3 +133,19 @@ tracking <- read.csv("data/active_tracking.csv")
 tracking$age <- as.numeric(difftime(Sys.time(), tracking$start_time, units = "hours"))
 final_list <- tracking[tracking$age <= 168, c("video_id", "start_time", "channel_id")]
 write.csv(final_list, "data/active_tracking.csv", row.names = FALSE)
+
+# 5, Channel video Look up
+lookup <- read.csv("data/channel-video-lookup.csv")
+lookup <- rbind(tracking, lookup)
+
+setDT(lookup)
+
+lookup[order(channel_id,start_time)]
+lookup <- unique(lookup, by = 'video_id')
+
+lookup$start_date <- as.Date(lookup$start_time)
+
+lookup$age <- NULL
+lookup$start_time <- NULL
+
+write.csv(lookup, "data/channel-video-lookup.csv", row.names = FALSE)

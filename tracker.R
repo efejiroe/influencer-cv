@@ -143,7 +143,7 @@ lookup <- read.csv("data/channel-video-lookup.csv")
 lookup <- rbind(tracking, lookup)
 
 setDT(lookup)
-lookup[order(channel_id,start_time)]
+lookup[order(channel_id,start_date)]
 lookup <- unique(lookup, by = 'video_id')
 
 write.csv(lookup, "data/channel-video-lookup.csv", row.names = FALSE)

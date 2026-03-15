@@ -192,6 +192,7 @@ write.csv(final_list, "data/active_tracking.csv", row.names = FALSE)
 tracking$start_date <- as.Date(tracking$start_time)
 tracking$age <- NULL
 tracking$start_time <- NULL
+tracking$sentiment_pulled <- NULL
 
 lookup <- read.csv("data/channel-video-lookup.csv")
 lookup <- rbind(tracking, lookup)

@@ -27,6 +27,7 @@ pacman::p_load(
   ,'httr2'
   ,'xml2'
   ,'data.table'
+  ,'syuzhet'
 )
 
 cat('Dependencies Loaded.\n')

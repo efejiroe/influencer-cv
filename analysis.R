@@ -3,7 +3,7 @@ library(data.table)
 # 1. Read
 d <- read.csv('data/tracking_data.csv', header = F)|>setDT()
 
-names(d) <- c('date_time', 'video_id', 'views', 'likes', 'comments')
+names(d) <- c('date_time', 'video_id', 'views', 'likes', 'comments', 'sentiment_pos', 'sentiment_neu', 'sentiment_neg')
 
 d[, date_time := as.POSIXct(date_time)]
 

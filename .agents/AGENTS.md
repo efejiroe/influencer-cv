@@ -16,7 +16,7 @@ This file defines the roles, scanning protocols, and resource management require
 ## Work Scoping & Resource Management
 
 * **Usage Limit Awareness**: When creating or updating the `TASK.md` file, the Thinking Agent must scope work to ensure that allocated daily usage limits for execution agents are not exhausted.
-* **Task Classification**: Every task entry must carry a classification of **light**, **medium**, or **heavy** based on the estimated usage cost and computational intensity of the request.
+* **Task Classification**: Every task entry by thinking agents must carry a classification of **light**, **medium**, or **heavy** based on the estimated usage cost and computational intensity of the request.
 
 ## Housekeeping Requirements
 

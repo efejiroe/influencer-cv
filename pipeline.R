@@ -1,5 +1,3 @@
-devMode <- TRUE
-
 source('ini.R')
 
 # --- ANALYSIS PHASE (from pipeline.R) ---

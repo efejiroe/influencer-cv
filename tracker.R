@@ -1,6 +1,4 @@
 ## Tracking Code ----
-devMode <- FALSE
-
 source('ini.R')
 
 # 1. Get list of influencers

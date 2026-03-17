@@ -1,6 +1,8 @@
 ## Environment ----
 API_KEY <- Sys.getenv("YT_DATA_API_KEY")
 
+devMode <- FALSE
+
 ## Library ---- 
 if(!require('pacman', quietly = TRUE)){install.packages('pacman')}
 

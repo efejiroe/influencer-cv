@@ -1,5 +1,3 @@
-devMode <- FALSE
-
 source('ini.R')
 library(httr2)
 library(jsonlite)

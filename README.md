@@ -66,23 +66,25 @@ Automated R pipeline for tracking YouTube video metrics and calculating Bass Dif
 ### Directory Structure
 
 #### / (Root)
-- **AGENTS.md**: Shared "Rules of Engagement" for AI agents (Claude, Gemini, Antigravity).
-- **EXECUTION_PLAN.md**: Active task log and handover notes for Thinking Agents.
-- **PROJECT_MAP.md**: This file; high-level navigation.
-- **README.md**: Project onboarding and commercial framework.
+- **README.md**: Human readable project onboarding and commercial framework which also contains folder logic.
+- **ini.R**: Environment setup.
+- **tracker.R**: YouTube Data API polling logic.
+- **benchmarker.R**: YouTube Data API 5-year past performance logic.
+- **etl.R**: Data transformation, Bass Model calculation, and export generation.
 
-#### /core (Consolidated Logic)
-- **AGENT.md**: Implementation rules for coding agents.
-- **tracker.R**: [Merged ini.R + tracker.R] Environment setup and YouTube Data API polling logic.
-- **pipeline.R**: [Merged analysis.R + pbi.R + generate_report.R] Data transformation, Bass Model calculation, and export generation.
+#### /.agents (Consolidated Logic)
+- **AGENT.md**: Implementation rules (scan, ignore, housekeeping) for coding agents.
+- **PLAN.md**: Execution road map and handover notes for thinking and task delegating agent.
+- **TASK.md**: Shared task log for active execution.
 
 #### /data (Sequestered - Agents Ignore)
-- **AGENT.md**: Schema definitions and data types for all CSVs.
 - **influencers.csv**: Registry of tracked YouTube channels.
 - **tracking_data.csv**: Fact table of hourly/daily polling metrics.
 - **active_tracking.csv**: Current state of videos within the 7-day tracking window.
 - **channel-video-lookup.csv**: Dimension table mapping videos to channels.
+[To do: add other benchmark.R output csv files]
 
 ### /.github/workflows
-- **tracker.yml**: GitHub Action scheduling the `core/engine.R` script hourly.
+- **tracker.yml**: GitHub Action scheduling the `tracker.R` script hourly.
+- **fetch.yml**: GitHub Action scheduling the `benchmarker.R` script at trigger events [To do: doesn't work yet]
 

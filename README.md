@@ -73,8 +73,8 @@ Automated R pipeline for tracking YouTube video metrics and calculating Bass Dif
 
 #### /core (Consolidated Logic)
 - **AGENT.md**: Implementation rules for coding agents.
-- **engine.R**: [Merged ini.R + tracker.R] Environment setup and YouTube Data API polling logic.
-- **analytics.R**: [Merged analysis.R + pbi.R + generate_report.R] Data transformation, Bass Model calculation, and export generation.
+- **tracker.R**: [Merged ini.R + tracker.R] Environment setup and YouTube Data API polling logic.
+- **pipeline.R**: [Merged analysis.R + pbi.R + generate_report.R] Data transformation, Bass Model calculation, and export generation.
 
 #### /data (Sequestered - Agents Ignore)
 - **AGENT.md**: Schema definitions and data types for all CSVs.

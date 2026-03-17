@@ -1,8 +1,6 @@
 ## Environment ----
 API_KEY <- Sys.getenv("YT_DATA_API_KEY")
 
-devMode <- FALSE
-
 ## Library ---- 
 if(!require('pacman', quietly = TRUE)){install.packages('pacman')}
 
@@ -10,7 +8,6 @@ if(devMode){
   print('Development mode')
   pacman::p_load(
     'renv'
-    ,'plumber'
     ,'gitcreds'
     ,'usethis'
     ,'rsconnect'

@@ -1,4 +1,7 @@
 ## Tracking Code ----
+devMode <- FALSE
+
+library('ini.R')
 
 # 1. Get list of influencers
 influencers <- read.csv("data/influencers.csv") 

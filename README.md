@@ -58,4 +58,31 @@ The system requires a `YT_DATA_API_KEY` to function.
 
 The script automatically cleans the `data/active_tracking.csv` file by removing videos older than 168 hours (7 days), ensuring the "active" list remains focused on relevant, high-growth content.
 
+## Project map
+
+### Overview
+Automated R pipeline for tracking YouTube video metrics and calculating Bass Diffusion coefficients. Designed for "Agent-First" development with sequestered logic and data.
+
+### Directory Structure
+
+#### / (Root)
+- **AGENTS.md**: Shared "Rules of Engagement" for AI agents (Claude, Gemini, Antigravity).
+- **EXECUTION_PLAN.md**: Active task log and handover notes for Thinking Agents.
+- **PROJECT_MAP.md**: This file; high-level navigation.
+- **README.md**: Project onboarding and commercial framework.
+
+#### /core (Consolidated Logic)
+- **AGENT.md**: Implementation rules for coding agents.
+- **engine.R**: [Merged ini.R + tracker.R] Environment setup and YouTube Data API polling logic.
+- **analytics.R**: [Merged analysis.R + pbi.R + generate_report.R] Data transformation, Bass Model calculation, and export generation.
+
+#### /data (Sequestered - Agents Ignore)
+- **AGENT.md**: Schema definitions and data types for all CSVs.
+- **influencers.csv**: Registry of tracked YouTube channels.
+- **tracking_data.csv**: Fact table of hourly/daily polling metrics.
+- **active_tracking.csv**: Current state of videos within the 7-day tracking window.
+- **channel-video-lookup.csv**: Dimension table mapping videos to channels.
+
+### /.github/workflows
+- **tracker.yml**: GitHub Action scheduling the `core/engine.R` script hourly.
 

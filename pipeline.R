@@ -1,6 +1,6 @@
 devMode <- TRUE
 
-library('ini.R')
+source('ini.R')
 
 # --- ANALYSIS PHASE (from pipeline.R) ---
 

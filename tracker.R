@@ -195,11 +195,11 @@ tracking$age <- NULL
 tracking$start_time <- NULL
 tracking$sentiment_pulled <- NULL
 
-lookup <- read.csv("data/channel-video-lookup.csv")
+lookup <- read.csv("data/channel_video_lookup.csv")
 lookup <- rbind(tracking, lookup)
 
 setDT(lookup)
 lookup[order(channel_id,start_date)]
 lookup <- unique(lookup, by = 'video_id')
 
-write.csv(lookup, "data/channel-video-lookup.csv", row.names = FALSE)
+write.csv(lookup, "data/channel_video_lookup.csv", row.names = FALSE)

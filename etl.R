@@ -11,7 +11,7 @@ setorder(d, video_id, views, date_time)
 d[, seq_no := 1:.N, by = video_id]
 
 # Link channels IDs using the lookup table
-lookup <- read.csv('data/channel-video-lookup.csv', header = TRUE) |> setDT()
+lookup <- read.csv('data/channel_video_lookup.csv', header = TRUE) |> setDT()
 d[lookup, channel_id := channel_id, on = .(video_id)]
 
 # Filter to include only linkable channels

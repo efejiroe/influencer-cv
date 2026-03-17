@@ -1,0 +1,12 @@
+# Agent Ignore Directives
+
+Do not scan, read, modify, or interact with the following directories and files. These contain sequestered data, archival content, or local environment configurations.
+
+data/
+renv/
+archive/
+renv.lock
+.Renviron
+.Rhistory
+.Rprofile
+influencer-cv.Rproj

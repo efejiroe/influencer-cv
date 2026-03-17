@@ -27,7 +27,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run Seed Script
-        run: Rscript seed_influencer_form.R
+        run: Rscript benchmarker.R
 
       - name: Commit and Push Baselines
         run: |

@@ -1,4 +1,4 @@
-# Execution Roadmap (PLAN.md)
+# Execution Roadmap
 
 ## Phase 1: Housekeeping & Deprecation
 **Objective:** Remove legacy reporting infrastructure to establish `etl.R` and Power BI as the sole analytical outputs.

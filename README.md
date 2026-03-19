@@ -72,8 +72,8 @@ Automated R pipeline for tracking YouTube video metrics and calculating Bass Dif
 - **benchmarker.R**: YouTube Data API 5-year past performance logic.
 - **etl.R**: Data transformation, Bass Model calculation, and export generation.
 
-#### /.agents (Consolidated Logic)
-- **AGENT.md**: Implementation rules (scan, ignore, housekeeping) for coding agents.
+#### /.agents (Consolidated Logic - Agents Read)
+- **AGENT.md**: Implementation rules for coding agents.
 - **PLAN.md**: Execution road map and handover notes for thinking and task delegating agent.
 - **TASK.md**: Shared task log for active execution.
 
